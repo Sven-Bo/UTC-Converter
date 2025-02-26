@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTC Time Converter</title>
+    <style>
+        :root {
+            --primary: #3772a3;
+            --primary-dark: #265782;
+            --secondary: #f5f5f5;
+            --text: #333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fafafa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .logo {
+            max-width: 200px;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .explanation {
+            margin-bottom: 1.5rem;
+        }
+
+        .converter {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .time-display {
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .selector {
+            margin: 1rem 0;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            color: var(--primary-dark);
+        }
+
+        .converted-time {
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .calculator {
+            display: flex;
+            flex-direction: column;
+            margin-top: 1.5rem;
+        }
+
+        .calculator-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .button {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+
+        .button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .result {
+            margin-top: 1.5rem;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 2rem 0;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <img src="https://pythonandvba.com/wp-content/uploads/2024/07/Python-VBA-Logo.png" alt="Python and VBA Logo"
+                class="logo">
+            <h1>UTC Time Converter</h1>
+            <p>Simple, accurate time zone conversion</p>
+        </header>
+
+        <div class="card explanation">
+            <h2>What is UTC?</h2>
+            <p>UTC (Coordinated Universal Time) is the primary time standard by which the world regulates clocks and
+                time. It's the successor to GMT (Greenwich Mean Time) and serves as the reference point for all time
+                zones worldwide.</p>
+            <p>UTC is not adjusted for daylight saving time, making it a consistent standard year-round.</p>
+        </div>
+
+        <div class="card converter">
+            <h2>Current UTC Time</h2>
+            <div class="time-display" id="utc-time"></div>
+
+            <div class="selector">
+                <label for="timezone-select">Convert to:</label>
+                <select id="timezone-select">
+                    <option value="UTC">UTC - Coordinated Universal Time</option>
+                    <option value="America/New_York">EST/EDT - Eastern Time (US & Canada)</option>
+                    <option value="America/Chicago">CST/CDT - Central Time (US & Canada)</option>
+                    <option value="America/Denver">MST/MDT - Mountain Time (US & Canada)</option>
+                    <option value="America/Los_Angeles">PST/PDT - Pacific Time (US & Canada)</option>
+                    <option value="Europe/London">GMT/BST - London</option>
+                    <option value="Europe/Paris">CET/CEST - Paris, France</option>
+                    <option value="Europe/Berlin">CET/CEST - Berlin, Germany</option>
+                    <option value="Europe/Madrid">CET/CEST - Madrid, Spain</option>
+                    <option value="Europe/Rome">CET/CEST - Rome, Italy</option>
+                    <option value="Asia/Tokyo">JST - Tokyo, Japan</option>
+                    <option value="Asia/Bangkok">ICT - Bangkok, Thailand</option>
+                    <option value="Asia/Singapore">SGT - Singapore</option>
+                    <option value="Australia/Sydney">AEST/AEDT - Sydney</option>
+                    <option value="Australia/Melbourne">AEST/AEDT - Melbourne</option>
+                    <option value="Australia/Perth">AWST - Perth</option>
+                    <option value="Asia/Shanghai">CST - Beijing, Shanghai</option>
+                    <option value="Asia/Hong_Kong">HKT - Hong Kong</option>
+                    <option value="Asia/Seoul">KST - Seoul, South Korea</option>
+                    <option value="Asia/Kolkata">IST - India</option>
+                    <option value="Africa/Johannesburg">SAST - South Africa</option>
+                    <option value="America/Sao_Paulo">BRT - São Paulo, Brazil</option>
+                    <option value="America/Mexico_City">CST/CDT - Mexico City</option>
+                    <option value="Pacific/Auckland">NZST/NZDT - Auckland, New Zealand</option>
+                    <option value="America/Anchorage">AKST/AKDT - Alaska</option>
+                    <option value="Pacific/Honolulu">HST - Hawaii</option>
+                </select>
+            </div>
+
+            <h2>Converted Time</h2>
+            <div class="converted-time" id="converted-time"></div>
+
+            <div class="divider"></div>
+
+            <div class="calculator">
+                <h2>Time Zone Calculator</h2>
+                <p>Convert your local time or any given time to UTC.</p>
+
+                <div class="calculator-inputs">
+                    <div class="input-group">
+                        <label for="calc-date">Date:</label>
+                        <input type="date" id="calc-date">
+                    </div>
+                    <div class="input-group">
+                        <label for="calc-time">Time:</label>
+                        <input type="time" id="calc-time">
+                    </div>
+                    <div class="input-group">
+                        <label for="calc-from-timezone">From Time Zone:</label>
+                        <select id="calc-from-timezone">
+                            <option value="UTC">UTC - Coordinated Universal Time</option>
+                            <option value="America/New_York">EST/EDT - Eastern Time (US & Canada)</option>
+                            <option value="America/Chicago">CST/CDT - Central Time (US & Canada)</option>
+                            <option value="America/Denver">MST/MDT - Mountain Time (US & Canada)</option>
+                            <option value="America/Los_Angeles">PST/PDT - Pacific Time (US & Canada)</option>
+                            <option value="Europe/London">GMT/BST - London</option>
+                            <option value="Europe/Paris">CET/CEST - Paris, France</option>
+                            <option value="Europe/Berlin">CET/CEST - Berlin, Germany</option>
+                            <option value="Europe/Madrid">CET/CEST - Madrid, Spain</option>
+                            <option value="Europe/Rome">CET/CEST - Rome, Italy</option>
+                            <option value="Asia/Tokyo">JST - Tokyo, Japan</option>
+                            <option value="Asia/Bangkok">ICT - Bangkok, Thailand</option>
+                            <option value="Asia/Singapore">SGT - Singapore</option>
+                            <option value="Australia/Sydney">AEST/AEDT - Sydney</option>
+                            <option value="Australia/Melbourne">AEST/AEDT - Melbourne</option>
+                            <option value="Australia/Perth">AWST - Perth</option>
+                            <option value="Asia/Shanghai">CST - Beijing, Shanghai</option>
+                            <option value="Asia/Hong_Kong">HKT - Hong Kong</option>
+                            <option value="Asia/Seoul">KST - Seoul, South Korea</option>
+                            <option value="Asia/Kolkata">IST - India</option>
+                            <option value="Africa/Johannesburg">SAST - South Africa</option>
+                            <option value="America/Sao_Paulo">BRT - São Paulo, Brazil</option>
+                            <option value="America/Mexico_City">CST/CDT - Mexico City</option>
+                            <option value="Pacific/Auckland">NZST/NZDT - Auckland, New Zealand</option>
+                            <option value="America/Anchorage">AKST/AKDT - Alaska</option>
+                            <option value="Pacific/Honolulu">HST - Hawaii</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="button" id="calc-convert">Convert</button>
+
+                <div class="result">
+                    <h3>Result:</h3>
+                    <div class="converted-time" id="calc-result">Please enter a date and time to convert</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Created with ❤️ by <a href="https://pythonandvba.com" class="logo-text">PythonAndVBA.com</a></p>
+    </footer>
+
+    <script>
+        // Set default date and time to current
+        document.addEventListener('DOMContentLoaded', function () {
+            const now = new Date();
+            const dateInput = document.getElementById('calc-date');
+            const timeInput = document.getElementById('calc-time');
+
+            // Format date as YYYY-MM-DD for input
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+
+            // Format time as HH:MM for input
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            timeInput.value = `${hours}:${minutes}`;
+
+            // Try to detect user's timezone and set it as default in "From" dropdown
+            try {
+                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const fromTimezoneSelect = document.getElementById('calc-from-timezone');
+                for (let i = 0; i < fromTimezoneSelect.options.length; i++) {
+                    if (fromTimezoneSelect.options[i].value === userTimezone) {
+                        fromTimezoneSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            } catch (error) {
+                // Fallback silently if browser doesn't support this
+            }
+        });
+
+        // Function to update the current UTC time and converted time display
+        function updateUTCTime() {
+            const now = new Date();
+            const utcTimeElement = document.getElementById('utc-time');
+            utcTimeElement.textContent = now.toISOString().replace('T', ' ').substr(0, 19) + ' UTC';
+            updateConvertedTime();
+        }
+
+        // Function to update the converted time (based on the "Convert to:" dropdown)
+        function updateConvertedTime() {
+            const now = new Date();
+            const timezoneSelect = document.getElementById('timezone-select');
+            const selectedTimezone = timezoneSelect.value;
+            const convertedTimeElement = document.getElementById('converted-time');
+
+            try {
+                const options = {
+                    timeZone: selectedTimezone,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                };
+                let formattedTime = new Intl.DateTimeFormat('en-US', options).format(now);
+                const parts = formattedTime.split(', ');
+                const dateParts = parts[0].split('/');
+                formattedTime = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]} ${parts[1]} ${selectedTimezone.split('/').pop().replace('_', ' ')}`;
+                convertedTimeElement.textContent = formattedTime;
+            } catch (error) {
+                convertedTimeElement.textContent = 'Timezone conversion failed';
+            }
+        }
+
+        // Function to convert time using the calculator (to UTC)
+        function convertCalculatorTime() {
+            const dateInput = document.getElementById('calc-date').value;
+            const timeInput = document.getElementById('calc-time').value;
+            const fromTimezone = document.getElementById('calc-from-timezone').value;
+            const resultElement = document.getElementById('calc-result');
+
+            if (!dateInput || !timeInput) {
+                resultElement.textContent = 'Please enter both date and time';
+                return;
+            }
+
+            try {
+                // Create a Date object from the input string
+                const dateTimeStr = `${dateInput}T${timeInput}:00`;
+                let sourceDate = new Date(dateTimeStr);
+
+                // Adjust the Date object if the source timezone is not UTC
+                if (fromTimezone !== 'UTC') {
+                    sourceDate = new Date(sourceDate.toLocaleString('en-US', { timeZone: fromTimezone }));
+                }
+
+                // Convert the date to UTC
+                const utcOptions = {
+                    timeZone: 'UTC',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                };
+                let formattedResult = new Intl.DateTimeFormat('en-US', utcOptions).format(sourceDate);
+                const resultParts = formattedResult.split(', ');
+                const dateParts = resultParts[0].split('/');
+                formattedResult = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]} ${resultParts[1]} UTC`;
+
+                resultElement.textContent = formattedResult;
+            } catch (error) {
+                resultElement.textContent = 'Conversion failed: ' + error.message;
+            }
+        }
+
+        // Initialize the time display
+        updateUTCTime();
+
+        // Update the time every second
+        setInterval(updateUTCTime, 1000);
+
+        // Event listeners
+        document.getElementById('timezone-select').addEventListener('change', updateConvertedTime);
+        document.getElementById('calc-convert').addEventListener('click', convertCalculatorTime);
+    </script>
+</body>
+
+</html>
