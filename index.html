@@ -10,6 +10,7 @@
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕒</text></svg>">
     <!-- Canvas-Confetti library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
     <style>
         :root {
             --primary: #3772a3;
@@ -872,11 +873,12 @@
                     second: '2-digit',
                     hour12: false
                 };
-                let formattedTime = new Intl.DateTimeFormat('en-US', options).format(now);
-                const parts = formattedTime.split(', ');
-                const dateParts = parts[0].split('/');
-                formattedTime = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]} ${parts[1]} ${selectedTimezone.split('/').pop().replace('_', ' ')}`;
+                let formattedTime = new Intl.DateTimeFormat('en-GB', options).format(now); // en-GB gives 24h format
+                const parts = formattedTime.split(', '); // parts[0] is date, parts[1] is time
+                const dateParts = parts[0].split('/'); // assuming dateParts is [day, month, year]
+                formattedTime = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0] + ' ' + parts[1] + ' ' + selectedTimezone.split('/').pop().replace('_', ' ');
                 convertedTimeElement.textContent = formattedTime;
+
             } catch (error) {
                 convertedTimeElement.textContent = 'Timezone conversion failed';
             }
@@ -888,36 +890,26 @@
             const timeInput = document.getElementById('calc-time').value;
             const fromTimezone = document.getElementById('calc-from-timezone').value;
             const resultElement = document.getElementById('calc-result');
+
             if (!dateInput || !timeInput) {
                 resultElement.textContent = 'Please enter both date and time';
                 return;
             }
-            try {
-                const dateTimeStr = `${dateInput}T${timeInput}:00`;
-                let sourceDate = new Date(dateTimeStr);
-                if (fromTimezone !== 'UTC') {
-                    sourceDate = new Date(sourceDate.toLocaleString('en-US', { timeZone: fromTimezone }));
-                }
-                const utcOptions = {
-                    timeZone: 'UTC',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                };
-                let formattedResult = new Intl.DateTimeFormat('en-US', utcOptions).format(sourceDate);
-                const resultParts = formattedResult.split(', ');
-                const dateParts = resultParts[0].split('/');
-                formattedResult = `${dateParts[2]}-${dateParts[0]}-${dateParts[1]} ${resultParts[1]} UTC`;
-                resultElement.textContent = formattedResult;
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            } catch (error) {
-                resultElement.textContent = 'Conversion failed: ' + error.message;
-            }
+
+            // Parse the input as a DateTime in the selected time zone
+            const dt = luxon.DateTime.fromISO(dateInput + 'T' + timeInput, { zone: fromTimezone });
+
+            // Convert to UTC
+            const utc = dt.toUTC();
+
+            // Format using 24-hour time
+            resultElement.textContent = utc.toFormat("yyyy-MM-dd HH:mm:ss") + " UTC";
+
+            // Trigger confetti (if desired)
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         }
+
+        document.getElementById('calc-convert').addEventListener('click', convertCalculatorTime);
 
         updateUTCTime();
         setInterval(updateUTCTime, 1000);
